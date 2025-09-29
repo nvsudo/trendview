@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+@import "./maybe-design-system.css";
+
+@import "./geist-font.css";
+@import "./geist-mono-font.css";
+
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";

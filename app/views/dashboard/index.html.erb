@@ -1,0 +1,170 @@
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <!-- Dashboard Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-primary">Trading Dashboard</h1>
+    <p class="mt-2 text-secondary">Welcome back, <%= current_user.display_name %>! Here's your trading overview.</p>
+  </div>
+
+  <!-- Portfolio Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-container overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">💰</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-tertiary truncate">Portfolio Value</dt>
+              <dd class="text-lg font-medium text-primary">₹<%= number_with_delimiter(@portfolio_stats[:total_value]) %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-container overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">📊</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-tertiary truncate">Deployed</dt>
+              <dd class="text-lg font-medium text-primary"><%= @portfolio_stats[:deployed_percentage] %>%</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-container overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">🎯</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-tertiary truncate">Win Rate</dt>
+              <dd class="text-lg font-medium text-primary">
+                <% if @portfolio_stats[:total_trades] > 0 %>
+                  <%= ((@portfolio_stats[:winning_trades].to_f / @portfolio_stats[:total_trades]) * 100).round(1) %>%
+                <% else %>
+                  0%
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-container overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">📈</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-tertiary truncate">Total Trades</dt>
+              <dd class="text-lg font-medium text-primary"><%= @portfolio_stats[:total_trades] %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="bg-container shadow rounded-lg mb-8">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-primary mb-4">Quick Actions</h3>
+      <div class="flex space-x-4">
+        <%= link_to new_trade_path, class: "bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-700" do %>
+          + Add New Trade
+        <% end %>
+        <%= link_to trading_accounts_path, class: "bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700" do %>
+          Manage Accounts
+        <% end %>
+        <%= link_to "/analytics", class: "bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700" do %>
+          View Analytics
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Trades -->
+  <div class="bg-container shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-primary mb-4">Recent Trades</h3>
+
+      <% if @recent_trades.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-border">
+            <thead class="bg-surface">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">Security</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">Type</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">Quantity</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">Entry Price</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-tertiary uppercase tracking-wider">P&L</th>
+              </tr>
+            </thead>
+            <tbody class="bg-container divide-y divide-border">
+              <% @recent_trades.each do |trade| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">
+                    <%= trade.security&.company_name || "N/A" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                    <span class="<%= trade.trade_type == 'buy' ? 'text-success' : 'text-destructive' %>">
+                      <%= trade.trade_type.upcase %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                    <%= number_with_delimiter(trade.quantity) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                    ₹<%= number_with_delimiter(trade.entry_price) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                          <%= trade.status == 'open' ? 'bg-warning-container text-warning-content' :
+                              trade.status == 'closed' ? 'bg-success-container text-success-content' :
+                              'bg-info-container text-info-content' %>">
+                      <%= trade.status.humanize %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <% if trade.closed? && trade.net_pnl.present? %>
+                      <span class="<%= trade.net_pnl >= 0 ? 'text-success' : 'text-destructive' %>">
+                        <%= trade.formatted_pnl %>
+                      </span>
+                    <% else %>
+                      <span class="text-secondary">-</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4">
+          <%= link_to "View All Trades", trades_path, class: "text-orange-600 hover:text-orange-700 font-medium" %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="text-4xl mb-4">📊</div>
+          <h3 class="text-lg font-medium text-primary mb-2">No trades yet</h3>
+          <p class="text-secondary mb-4">Start your trading journey by adding your first trade.</p>
+          <%= link_to "Add Your First Trade", new_trade_path, class: "bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-700" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

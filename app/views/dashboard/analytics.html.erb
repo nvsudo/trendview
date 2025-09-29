@@ -1,0 +1,145 @@
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <!-- Analytics Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Trading Analytics</h1>
+    <p class="mt-2 text-gray-600">Detailed performance analysis and insights from your trading data.</p>
+  </div>
+
+  <!-- Key Metrics Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">🎯</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Win Rate</dt>
+              <dd class="text-lg font-medium text-gray-900">
+                <% if @portfolio_stats[:total_trades] > 0 %>
+                  <%= ((@portfolio_stats[:winning_trades].to_f / @portfolio_stats[:total_trades]) * 100).round(1) %>%
+                <% else %>
+                  0%
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">📊</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Trades</dt>
+              <dd class="text-lg font-medium text-gray-900"><%= @portfolio_stats[:total_trades] %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">✅</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Winning Trades</dt>
+              <dd class="text-lg font-medium text-green-600"><%= @portfolio_stats[:winning_trades] %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-2xl">❌</div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Losing Trades</dt>
+              <dd class="text-lg font-medium text-red-600"><%= @portfolio_stats[:losing_trades] %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics Cards -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Monthly P&L Trend -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Monthly P&L Trend</h3>
+
+        <% if @monthly_pnl.any? %>
+          <div class="space-y-3">
+            <% @monthly_pnl.last(6).each do |month, pnl| %>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">
+                  <%= month&.strftime("%b %Y") || "Current" %>
+                </span>
+                <span class="<%= pnl >= 0 ? 'text-green-600' : 'text-red-600' %> font-medium">
+                  <%= pnl >= 0 ? '+' : '' %>₹<%= number_with_delimiter(pnl.round(2)) %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="text-4xl mb-4">📈</div>
+            <p class="text-gray-500">No closed trades to analyze yet.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Strategy Breakdown -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Strategy Performance</h3>
+
+        <% if @strategy_breakdown.any? %>
+          <div class="space-y-3">
+            <% @strategy_breakdown.group_by { |key, _| key.first }.each do |strategy, results| %>
+              <div class="border-b border-gray-200 pb-3">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-medium text-gray-900">
+                    <%= strategy&.humanize || "Unclassified" %>
+                  </span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Wins: <%= results.find { |r| r[0][1] == 'profit' }&.last || 0 %></span>
+                  <span>Losses: <%= results.find { |r| r[0][1] == 'loss' }&.last || 0 %></span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="text-4xl mb-4">🎯</div>
+            <p class="text-gray-500">No strategy data available yet.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Dashboard -->
+  <div class="mt-8">
+    <%= link_to "← Back to Dashboard", root_path, class: "text-orange-600 hover:text-orange-700 font-medium" %>
+  </div>
+</div>

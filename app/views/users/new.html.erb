@@ -1,0 +1,76 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <div class="mx-auto h-12 w-12 flex items-center justify-center">
+        <span class="text-4xl">🔥</span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Join Ignition
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Start your momentum trading journey
+      </p>
+    </div>
+
+    <%= form_with model: @user, url: signup_path, local: true, class: "mt-8 space-y-6" do |form| %>
+      <% if @user.errors.any? %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <h4 class="font-medium">Please fix the following errors:</h4>
+          <ul class="mt-2 list-disc list-inside text-sm">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= form.label :first_name, "First Name", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :first_name, required: true, autofocus: true,
+                                class: "mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm",
+                                placeholder: "First name" %>
+          </div>
+          <div>
+            <%= form.label :last_name, "Last Name", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :last_name, required: true,
+                                class: "mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm",
+                                placeholder: "Last name" %>
+          </div>
+        </div>
+
+        <div>
+          <%= form.label :email, "Email address", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.email_field :email, required: true, autocomplete: "email",
+                               class: "mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm",
+                               placeholder: "Enter your email" %>
+        </div>
+
+        <div>
+          <%= form.label :password, "Password", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password, required: true, autocomplete: "new-password",
+                                  class: "mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm",
+                                  placeholder: "Create a password" %>
+          <p class="mt-1 text-sm text-gray-500">Must be at least 8 characters long</p>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password",
+                                  class: "mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm",
+                                  placeholder: "Confirm your password" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.submit "Create Account", class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+      </div>
+
+      <div class="text-center">
+        <span class="text-sm text-gray-600">Already have an account?</span>
+        <%= link_to "Sign in", login_path, class: "font-medium text-orange-600 hover:text-orange-500" %>
+      </div>
+    <% end %>
+  </div>
+</div>

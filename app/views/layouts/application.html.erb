@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Ignition Clean" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-surface">
+    <% if authenticated? %>
+      <nav class="bg-container shadow-sm border-b border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex items-center">
+              <%= link_to root_path, class: "text-xl font-bold text-orange-600" do %>
+                🔥 Ignition
+              <% end %>
+
+              <div class="ml-10 flex space-x-8">
+                <%= link_to "Dashboard", root_path, class: "text-secondary hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Trades", trades_path, class: "text-secondary hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Portfolio", "/portfolio", class: "text-secondary hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Analytics", "/analytics", class: "text-secondary hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium" %>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-secondary">Welcome, <%= current_user.display_name %></span>
+              <%= link_to "Logout", logout_path, method: :delete, class: "bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-700" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <main>
+      <% if notice %>
+        <div class="bg-success-container border border-success text-success-content px-4 py-3 rounded mb-4 mx-4 mt-4">
+          <%= notice %>
+        </div>
+      <% end %>
+
+      <% if alert %>
+        <div class="bg-destructive-container border border-destructive text-destructive-content px-4 py-3 rounded mb-4 mx-4 mt-4">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>
