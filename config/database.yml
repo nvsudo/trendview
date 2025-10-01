@@ -54,6 +54,13 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  adapter: postgresql
-  url: <%= ENV['DATABASE_PUBLIC_URL'] %>
-  pool: 10
+  primary: &primary_production
+    adapter: postgresql
+    url: <%= ENV['DATABASE_PUBLIC_URL'] %>
+    pool: 10
+  cache:
+    <<: *primary_production
+  queue:
+    <<: *primary_production
+  cable:
+    <<: *primary_production

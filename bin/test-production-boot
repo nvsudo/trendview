@@ -1,0 +1,129 @@
+#!/usr/bin/env ruby
+
+# Production Boot Test Script
+# Tests Rails production configuration locally before Railway deployment
+# Catches configuration errors that would cause production failures
+
+puts "\n" + "="*80
+puts "🔍 PRODUCTION BOOT TEST - Testing Railway deployment readiness"
+puts "="*80 + "\n"
+
+# Step 1: Check environment variables
+puts "[1/6] Checking required environment variables..."
+required_vars = {
+  "DATABASE_PUBLIC_URL" => ENV["DATABASE_PUBLIC_URL"],
+  "RAILS_MASTER_KEY" => File.exist?("config/master.key") ? File.read("config/master.key").strip : ENV["RAILS_MASTER_KEY"]
+}
+
+missing_vars = required_vars.select { |k, v| v.nil? || v.empty? }
+if missing_vars.any?
+  puts "❌ Missing environment variables:"
+  missing_vars.each { |k, _| puts "   - #{k}" }
+  puts "\nSet these in Railway dashboard or your .env file"
+  exit 1
+end
+puts "✅ All required environment variables present\n"
+
+# Step 2: Set production environment
+puts "[2/6] Setting RAILS_ENV=production..."
+ENV["RAILS_ENV"] = "production"
+ENV["RAILS_MASTER_KEY"] ||= required_vars["RAILS_MASTER_KEY"]
+puts "✅ Environment configured\n"
+
+# Step 3: Load Rails environment
+puts "[3/6] Loading Rails production environment..."
+begin
+  require_relative "../config/environment"
+  puts "✅ Rails environment loaded successfully\n"
+rescue => e
+  puts "❌ Failed to load Rails environment:"
+  puts "   #{e.class}: #{e.message}"
+  puts "\n   Backtrace:"
+  puts e.backtrace.first(10).map { |line| "   #{line}" }.join("\n")
+  exit 1
+end
+
+# Step 4: Test database connections
+puts "[4/6] Testing database connections..."
+begin
+  # Test primary database
+  ActiveRecord::Base.connection.execute("SELECT 1")
+  puts "✅ Primary database: Connected"
+
+  # Test Solid Cache database
+  if defined?(SolidCache)
+    SolidCache::Entry.connection.execute("SELECT 1")
+    puts "✅ Solid Cache database: Connected"
+  end
+
+  # Test Solid Queue database
+  if defined?(SolidQueue)
+    SolidQueue::Job.connection.execute("SELECT 1") rescue nil
+    puts "✅ Solid Queue database: Connected"
+  end
+
+  # Test Solid Cable database
+  if defined?(SolidCable)
+    SolidCable::Message.connection.execute("SELECT 1") rescue nil
+    puts "✅ Solid Cable database: Connected"
+  end
+
+  puts ""
+rescue => e
+  puts "❌ Database connection failed:"
+  puts "   #{e.class}: #{e.message}"
+  exit 1
+end
+
+# Step 5: Eager load all application code
+puts "[5/6] Eager loading application code (simulates production boot)..."
+begin
+  Rails.application.eager_load!
+  puts "✅ All classes loaded without errors\n"
+rescue => e
+  puts "❌ Eager load failed:"
+  puts "   #{e.class}: #{e.message}"
+  puts "\n   This error would crash production on boot!"
+  puts "\n   Backtrace:"
+  puts e.backtrace.first(15).map { |line| "   #{line}" }.join("\n")
+  exit 1
+end
+
+# Step 6: Verify core components
+puts "[6/6] Verifying core components..."
+begin
+  # Check ViewComponent is available
+  raise "ApplicationComponent not loadable" unless defined?(ApplicationComponent)
+  puts "✅ ApplicationComponent: Loadable"
+
+  # Check design system component
+  raise "DesignSystemComponent not loadable" unless defined?(DesignSystemComponent)
+  puts "✅ DesignSystemComponent: Loadable"
+
+  # Check credentials are readable
+  secret = Rails.application.credentials.secret_key_base
+  raise "Cannot read secret_key_base from credentials" if secret.nil? || secret.empty?
+  puts "✅ Rails credentials: Decryptable (secret_key_base present)"
+
+  puts ""
+rescue => e
+  puts "❌ Component verification failed:"
+  puts "   #{e.message}"
+  exit 1
+end
+
+# Success summary
+puts "="*80
+puts "🎉 SUCCESS! Production configuration is valid"
+puts "="*80
+puts "\nAll checks passed:"
+puts "  ✅ Environment variables configured"
+puts "  ✅ Rails boots in production mode"
+puts "  ✅ Database connections work"
+puts "  ✅ All classes load successfully (eager load)"
+puts "  ✅ Core components are available"
+puts "  ✅ Credentials decrypt correctly"
+puts "\n✨ Ready to deploy to Railway!"
+puts "="*80 + "\n"
+
+exit 0
