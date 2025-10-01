@@ -16,6 +16,8 @@ gem "turbo-rails"
 gem "stimulus-rails"
 # Use Tailwind CSS for styling
 gem "tailwindcss-rails"
+# Component-based view layer [https://viewcomponent.org]
+gem "view_component"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
