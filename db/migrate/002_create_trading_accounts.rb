@@ -25,7 +25,6 @@ class CreateTradingAccounts < ActiveRecord::Migration[7.2]
 
       # Timestamps
       t.timestamps
-
     end
 
     # Create indexes with IF NOT EXISTS protection

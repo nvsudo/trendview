@@ -28,10 +28,10 @@ class Security < ApplicationRecord
   # Scopes
   scope :active, -> { where(active: true) }
   scope :stocks, -> { where(security_type: :stock) }
-  scope :nse, -> { where(exchange: 'NSE') }
-  scope :bse, -> { where(exchange: 'BSE') }
+  scope :nse, -> { where(exchange: "NSE") }
+  scope :bse, -> { where(exchange: "BSE") }
   scope :by_sector, ->(sector) { where(sector: sector) }
-  scope :recently_updated, -> { where('last_updated > ?', 1.hour.ago) }
+  scope :recently_updated, -> { where("last_updated > ?", 1.hour.ago) }
 
   # Search functionality
   scope :search, ->(term) {
@@ -109,7 +109,7 @@ class Security < ApplicationRecord
   def self.sync_market_data_for_active_securities
     # Called by background job to update prices for all actively traded securities
     active_symbols = joins(:trades)
-      .where(trades: { status: 'open' })
+      .where(trades: { status: "open" })
       .distinct
       .pluck(:symbol)
 

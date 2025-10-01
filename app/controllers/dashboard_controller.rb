@@ -34,14 +34,14 @@ class DashboardController < ApplicationController
   def calculate_monthly_pnl
     current_user.trades.closed
                 .group_by { |trade| trade.exit_date&.beginning_of_month }
-                .map { |month, trades| [month, trades.sum(&:net_pnl)] }
+                .map { |month, trades| [ month, trades.sum(&:net_pnl) ] }
                 .compact
   end
 
   def calculate_strategy_breakdown
     current_user.trades.closed
                 .group(:strategy)
-                .group('CASE WHEN net_pnl > 0 THEN \'profit\' ELSE \'loss\' END')
+                .group("CASE WHEN net_pnl > 0 THEN 'profit' ELSE 'loss' END")
                 .count
   end
 
@@ -51,7 +51,7 @@ class DashboardController < ApplicationController
                 .map do |month, trades|
       winning = trades.select(&:profitable?).count
       total = trades.count
-      [month, total > 0 ? (winning.to_f / total * 100).round(1) : 0]
+      [ month, total > 0 ? (winning.to_f / total * 100).round(1) : 0 ]
     end.compact
   end
 
@@ -60,8 +60,8 @@ class DashboardController < ApplicationController
 
     current_user.trades.open
                 .includes(:security)
-                .group_by { |trade| trade.security&.sector || 'Unknown' }
-                .map { |sector, trades| [sector, trades.sum(&:position_value)] }
+                .group_by { |trade| trade.security&.sector || "Unknown" }
+                .map { |sector, trades| [ sector, trades.sum(&:position_value) ] }
                 .to_h
   end
 end

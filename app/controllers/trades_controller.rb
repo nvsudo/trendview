@@ -1,5 +1,5 @@
 class TradesController < ApplicationController
-  before_action :set_trade, only: [:show, :edit, :update, :destroy]
+  before_action :set_trade, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @trades = current_user.trades.includes(:security, :trading_account)
@@ -18,7 +18,7 @@ class TradesController < ApplicationController
     @trade = current_user.trades.build(trade_params)
 
     if @trade.save
-      redirect_to @trade, notice: 'Trade was successfully created.'
+      redirect_to @trade, notice: "Trade was successfully created."
     else
       render :new
     end
@@ -29,7 +29,7 @@ class TradesController < ApplicationController
 
   def update
     if @trade.update(trade_params)
-      redirect_to @trade, notice: 'Trade was successfully updated.'
+      redirect_to @trade, notice: "Trade was successfully updated."
     else
       render :edit
     end
@@ -37,7 +37,7 @@ class TradesController < ApplicationController
 
   def destroy
     @trade.destroy
-    redirect_to trades_url, notice: 'Trade was successfully deleted.'
+    redirect_to trades_url, notice: "Trade was successfully deleted."
   end
 
   private

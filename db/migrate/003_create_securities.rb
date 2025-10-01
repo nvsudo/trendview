@@ -46,7 +46,7 @@ class CreateSecurities < ActiveRecord::Migration[7.2]
 
       # Indexes for performance
       t.index :symbol
-      t.index [:symbol, :exchange], unique: true
+      t.index [ :symbol, :exchange ], unique: true
       t.index :nse_symbol
       t.index :exchange
       t.index :security_type
@@ -54,7 +54,6 @@ class CreateSecurities < ActiveRecord::Migration[7.2]
       t.index :active
       t.index :last_updated
     end
-
   end
 
   def down

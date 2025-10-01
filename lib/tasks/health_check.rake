@@ -1,6 +1,6 @@
 namespace :app do
   desc "Run comprehensive health checks (like npm build for Rails)"
-  task :health_check => :environment do
+  task health_check: :environment do
     puts "🔥 Running Ignition Health Checks..."
 
     errors = []
@@ -37,7 +37,7 @@ namespace :app do
     end
 
     # 4. Test all model associations
-    [User, TradingAccount, Trade, Security, AccountSnapshot, UserStockAnalysis, Session, Position, JournalEntry].each do |model|
+    [ User, TradingAccount, Trade, Security, AccountSnapshot, UserStockAnalysis, Session, Position, JournalEntry ].each do |model|
       begin
         model.reflect_on_all_associations.each do |assoc|
           # Just reflect, don't execute queries for empty tables

@@ -29,8 +29,8 @@ class Trade < ApplicationRecord
 
   # Scopes
   scope :recent, -> { order(entry_date: :desc) }
-  scope :profitable, -> { where('net_pnl > 0') }
-  scope :losing, -> { where('net_pnl < 0') }
+  scope :profitable, -> { where("net_pnl > 0") }
+  scope :losing, -> { where("net_pnl < 0") }
   scope :by_strategy, ->(strategy) { where(strategy: strategy) }
   scope :by_timeframe, ->(tf) { where(timeframe: tf) }
   scope :this_month, -> { where(entry_date: Date.current.beginning_of_month..Date.current.end_of_month) }

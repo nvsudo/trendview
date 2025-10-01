@@ -30,7 +30,6 @@ class CreateUsers < ActiveRecord::Migration[7.2]
       t.index :active
       t.index :created_at
     end
-
   end
 
   def down

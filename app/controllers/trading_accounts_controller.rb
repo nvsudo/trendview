@@ -1,5 +1,5 @@
 class TradingAccountsController < ApplicationController
-  before_action :set_trading_account, only: [:show, :edit, :update]
+  before_action :set_trading_account, only: [ :show, :edit, :update ]
 
   def index
     @trading_accounts = current_user.trading_accounts.includes(:user)
@@ -18,7 +18,7 @@ class TradingAccountsController < ApplicationController
     @trading_account = current_user.trading_accounts.build(trading_account_params)
 
     if @trading_account.save
-      redirect_to @trading_account, notice: 'Trading account was successfully connected.'
+      redirect_to @trading_account, notice: "Trading account was successfully connected."
     else
       render :new
     end
@@ -29,7 +29,7 @@ class TradingAccountsController < ApplicationController
 
   def update
     if @trading_account.update(trading_account_params)
-      redirect_to @trading_account, notice: 'Trading account was successfully updated.'
+      redirect_to @trading_account, notice: "Trading account was successfully updated."
     else
       render :edit
     end

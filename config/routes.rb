@@ -10,15 +10,25 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Authentication routes
-  resource :session, only: [:new, :create, :destroy]
+  resource :session, only: [ :new, :create, :destroy ]
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy"
 
   # User registration
-  resources :users, only: [:new, :create]
+  resources :users, only: [ :new, :create, :update ]
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
+
+  # Onboarding flow
+  resource :onboarding, only: :show do
+    collection do
+      get :trading_profile
+      get :first_account
+      get :initial_data
+      post :reset
+    end
+  end
 
   # Main application routes
   root "dashboard#index"
@@ -30,9 +40,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :trading_accounts, only: [:index, :show, :new, :create, :edit, :update]
-  resources :securities, only: [:index, :show] do
-    resources :user_stock_analyses, except: [:index]
+  resources :trading_accounts, only: [ :index, :show, :new, :create, :edit, :update ]
+  resources :securities, only: [ :index, :show ] do
+    resources :user_stock_analyses, except: [ :index ]
   end
 
   # Dashboard and analytics

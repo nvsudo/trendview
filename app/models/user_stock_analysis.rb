@@ -7,7 +7,7 @@ class UserStockAnalysis < ApplicationRecord
 
   # Validations
   validates :user_id, uniqueness: { scope: :security_id }
-  validates :user_stage, inclusion: { in: [1, 2, 3, 4] }, allow_nil: true
+  validates :user_stage, inclusion: { in: [ 1, 2, 3, 4 ] }, allow_nil: true
   validates :user_rs_rank, numericality: { in: 1.0..10.0 }, allow_nil: true
   validates :setup_quality_rating, inclusion: { in: 1..5 }, allow_nil: true
 
@@ -22,7 +22,7 @@ class UserStockAnalysis < ApplicationRecord
   # Scopes
   scope :by_stage, ->(stage) { where(user_stage: stage) }
   scope :by_conviction, ->(level) { where(conviction_level: level) }
-  scope :high_quality, -> { where('setup_quality_rating >= ?', 4) }
+  scope :high_quality, -> { where("setup_quality_rating >= ?", 4) }
   scope :recent, -> { order(last_updated_by_user: :desc) }
 
   # Analysis methods
@@ -54,11 +54,11 @@ class UserStockAnalysis < ApplicationRecord
   end
 
   def bullish_setup?
-    user_stage.in?([2, 3]) && (user_rs_rank || 0) >= 6.0
+    user_stage.in?([ 2, 3 ]) && (user_rs_rank || 0) >= 6.0
   end
 
   def bearish_setup?
-    user_stage.in?([1, 4]) && (user_rs_rank || 0) <= 4.0
+    user_stage.in?([ 1, 4 ]) && (user_rs_rank || 0) <= 4.0
   end
 
   # Price target calculations

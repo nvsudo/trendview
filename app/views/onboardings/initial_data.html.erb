@@ -1,0 +1,138 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl w-full space-y-8">
+    <!-- Progress Bar -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm font-medium text-gray-700">Step 4 of 4 - Final Step!</span>
+        <span class="text-sm text-gray-500"><%= @progress %>% Complete</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-orange-600 h-2 rounded-full transition-all duration-300" style="width: <%= @progress %>%"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="mx-auto h-12 w-12 flex items-center justify-center">
+        <span class="text-4xl">📈</span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        How would you like to start?
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Choose how you'd like to populate your trading journal
+      </p>
+    </div>
+
+    <%= form_with url: user_path(current_user), method: :patch, local: true, id: "initial_data_form", class: "mt-8" do |form| %>
+      <%= hidden_field_tag :step_name, "initial_data" %>
+      <%= hidden_field_tag 'step_data[data_path]', '', id: 'data_path_field' %>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Zerodha Import -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition cursor-pointer onboarding-card"
+             data-path="zerodha"
+             onclick="selectDataPath('zerodha')">
+          <div class="p-8 text-center space-y-4">
+            <div class="mx-auto h-16 w-16 flex items-center justify-center bg-orange-100 rounded-full">
+              <span class="text-3xl">🔗</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Connect Zerodha</h3>
+            <p class="text-sm text-gray-600">
+              Automatically import your trades and holdings from Zerodha Kite
+            </p>
+            <div class="pt-4">
+              <span class="inline-block px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-md">
+                Recommended
+              </span>
+            </div>
+            <ul class="text-sm text-left text-gray-600 space-y-2">
+              <li>✓ Automatic trade sync</li>
+              <li>✓ Real-time portfolio updates</li>
+              <li>✓ Historical data import</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Manual Import -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition cursor-pointer onboarding-card"
+             data-path="manual"
+             onclick="selectDataPath('manual')">
+          <div class="p-8 text-center space-y-4">
+            <div class="mx-auto h-16 w-16 flex items-center justify-center bg-blue-100 rounded-full">
+              <span class="text-3xl">📝</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Manual Import</h3>
+            <p class="text-sm text-gray-600">
+              Upload a CSV of your trades or enter them manually
+            </p>
+            <div class="pt-4">
+              <span class="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md">
+                Any Broker
+              </span>
+            </div>
+            <ul class="text-sm text-left text-gray-600 space-y-2">
+              <li>✓ Works with any broker</li>
+              <li>✓ CSV file upload</li>
+              <li>✓ Manual trade entry</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Watchlist -->
+        <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition cursor-pointer onboarding-card"
+             data-path="watchlist"
+             onclick="selectDataPath('watchlist')">
+          <div class="p-8 text-center space-y-4">
+            <div class="mx-auto h-16 w-16 flex items-center justify-center bg-green-100 rounded-full">
+              <span class="text-3xl">👁️</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Start with Watchlist</h3>
+            <p class="text-sm text-gray-600">
+              Create a watchlist of stocks you're interested in
+            </p>
+            <div class="pt-4">
+              <span class="inline-block px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md">
+                Getting Started
+              </span>
+            </div>
+            <ul class="text-sm text-left text-gray-600 space-y-2">
+              <li>✓ No trades required</li>
+              <li>✓ Quick setup</li>
+              <li>✓ Add trades later</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center">
+        <%= link_to "← Back", first_account_onboarding_path, class: "text-sm text-gray-600 hover:text-gray-900" %>
+      </div>
+
+      <div class="mt-8 bg-white rounded-lg shadow-md p-6 text-center">
+        <p class="text-sm text-gray-600">
+          You're almost there! Select an option above to complete your setup 🎉
+        </p>
+        <p class="mt-2 text-xs text-gray-500">
+          Thank you for your patience. We can't wait to help you level up your trading!
+        </p>
+      </div>
+    <% end %>
+
+    <script>
+      function selectDataPath(path) {
+        document.getElementById('data_path_field').value = path;
+
+        // Remove selection from all cards
+        document.querySelectorAll('.onboarding-card').forEach(card => {
+          card.classList.remove('ring-4', 'ring-orange-500');
+        });
+
+        // Add selection to clicked card
+        event.currentTarget.classList.add('ring-4', 'ring-orange-500');
+
+        // Submit the form
+        document.getElementById('initial_data_form').submit();
+      }
+    </script>
+  </div>
+</div>

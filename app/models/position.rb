@@ -20,8 +20,8 @@ class Position < ApplicationRecord
   # Scopes
   scope :long_positions, -> { where(position_type: :long) }
   scope :short_positions, -> { where(position_type: :short) }
-  scope :profitable, -> { where('unrealized_pnl > 0') }
-  scope :losing, -> { where('unrealized_pnl < 0') }
+  scope :profitable, -> { where("unrealized_pnl > 0") }
+  scope :losing, -> { where("unrealized_pnl < 0") }
 
   # Position calculations
   def current_value

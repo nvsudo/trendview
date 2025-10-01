@@ -1,0 +1,95 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl w-full space-y-8">
+    <!-- Progress Bar -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm font-medium text-gray-700">Step 1 of 4</span>
+        <span class="text-sm text-gray-500"><%= @progress %>% Complete</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-orange-600 h-2 rounded-full transition-all duration-300" style="width: <%= @progress %>%"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="mx-auto h-12 w-12 flex items-center justify-center">
+        <span class="text-4xl">🔥</span>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Welcome to Ignition
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        We're excited to have you! Let's set up your trading journal in just a few steps.
+      </p>
+      <p class="mt-1 text-center text-xs text-gray-500">
+        ⏱️ Takes about 2 minutes
+      </p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-8 space-y-6">
+      <div class="space-y-4">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">✓</span>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-lg font-medium text-gray-900">Your Profile</h3>
+            <p class="mt-1 text-sm text-gray-600">
+              You've already completed this step! Your account is created with:
+            </p>
+            <div class="mt-2 text-sm text-gray-700">
+              <p><strong><%= @user.display_name %></strong></p>
+              <p class="text-gray-500"><%= @user.email %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">📊</span>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-lg font-medium text-gray-900">Trading Profile</h3>
+            <p class="mt-1 text-sm text-gray-600">
+              Tell us about your trading style and goals
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">💼</span>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-lg font-medium text-gray-900">First Trading Account</h3>
+            <p class="mt-1 text-sm text-gray-600">
+              Connect or manually add your first trading account
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">📈</span>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-lg font-medium text-gray-900">Initial Data</h3>
+            <p class="mt-1 text-sm text-gray-600">
+              Import trades or start with a watchlist
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4">
+        <%= link_to "Continue →", trading_profile_onboarding_path,
+            class: "w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+      </div>
+
+      <div class="text-center text-xs text-gray-500">
+        <p>Thank you for your patience as we get you set up!</p>
+        <p class="mt-1">We promise it'll be worth it 🙏</p>
+      </div>
+    </div>
+  </div>
+</div>
