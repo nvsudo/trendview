@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_01_101310) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_02_162613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,6 +77,50 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_01_101310) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "holding_sections", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.integer "position", default: 0
+    t.string "color", default: "#6B7280"
+    t.boolean "is_default", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_holding_sections_on_user_id_and_name", unique: true
+    t.index ["user_id", "position"], name: "index_holding_sections_on_user_id_and_position"
+    t.index ["user_id"], name: "index_holding_sections_on_user_id"
+  end
+
+  create_table "positions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "trading_account_id", null: false
+    t.bigint "security_id", null: false
+    t.integer "quantity", null: false
+    t.decimal "average_price", precision: 10, scale: 2, null: false
+    t.string "position_type", default: "long", null: false
+    t.decimal "unrealized_pnl", precision: 12, scale: 2, default: "0.0"
+    t.datetime "last_updated"
+    t.datetime "closed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "holding_section_id"
+    t.integer "generation", default: 1, null: false
+    t.string "status", default: "open", null: false
+    t.datetime "opened_at", null: false
+    t.index ["closed_at"], name: "index_positions_on_closed_at"
+    t.index ["generation"], name: "index_positions_on_generation"
+    t.index ["holding_section_id"], name: "index_positions_on_holding_section_id"
+    t.index ["security_id"], name: "index_positions_on_security_id"
+    t.index ["status"], name: "index_positions_on_status"
+    t.index ["trading_account_id"], name: "index_positions_on_trading_account_id"
+    t.index ["user_id", "holding_section_id"], name: "index_positions_on_user_id_and_holding_section_id"
+    t.index ["user_id", "position_type"], name: "index_positions_on_user_id_and_position_type"
+    t.index ["user_id", "status"], name: "index_positions_on_user_id_and_status"
+    t.index ["user_id", "trading_account_id", "security_id", "generation"], name: "idx_position_unique_identity", unique: true
+    t.index ["user_id", "trading_account_id", "security_id", "status"], name: "idx_one_open_position_per_security", unique: true, where: "((status)::text = 'open'::text)"
+    t.index ["user_id"], name: "index_positions_on_user_id"
   end
 
   create_table "securities", force: :cascade do |t|
@@ -245,6 +289,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_01_101310) do
   add_foreign_key "account_snapshots", "trading_accounts"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "holding_sections", "users"
+  add_foreign_key "positions", "holding_sections"
+  add_foreign_key "positions", "securities"
+  add_foreign_key "positions", "trading_accounts"
+  add_foreign_key "positions", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "trades", "securities"
   add_foreign_key "trades", "trading_accounts"

@@ -1,0 +1,17 @@
+trader_one:
+  email: trader1@example.com
+  first_name: John
+  last_name: Doe
+  password_digest: <%= BCrypt::Password.create('password123') %>
+
+trader_two:
+  email: trader2@example.com
+  first_name: Jane
+  last_name: Smith
+  password_digest: <%= BCrypt::Password.create('password123') %>
+
+new_trader:
+  email: newtrader@example.com
+  first_name: New
+  last_name: Trader
+  password_digest: <%= BCrypt::Password.create('password123') %>

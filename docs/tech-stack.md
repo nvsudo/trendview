@@ -63,6 +63,25 @@
 - **Why Chosen**: Policy-based authorization, easy to understand and maintain
 - **Use Cases**: Trading account access, social feature permissions, admin controls
 
+### **User Roles (Simplified String Field)**
+- **Current Implementation**: String column with PostgreSQL enum constraint (`'trader'`, `'admin'`)
+- **Default Role**: All users default to `'trader'` on registration via ActiveRecord attribute
+- **Phase 1 Status**: Field exists but **not actively used** - all users are traders
+- **Design Decision**: Using simple string field instead of Rails enum for MVP simplicity
+- **Future Use Cases** (Phase 2+):
+  - **Admin Dashboard**: Customer support access via Pundit policies checking `user.role == 'admin'`
+  - **User Impersonation**: Admin ability to view application from user's perspective
+  - **System Monitoring**: Internal analytics, user growth metrics, system health
+  - **Content Moderation**: If social features added (shared watchlists, trade ideas)
+  - **Subscription Management**: Manual billing adjustments, account management
+- **Technical Details**:
+  - Database column: `users.role` (PostgreSQL user_role enum type)
+  - ActiveRecord: `attribute :role, :string, default: 'trader'`
+  - Validation: `validates :role, inclusion: { in: %w[trader admin] }`
+  - No Rails enum magic - simple string comparison in code
+  - Migration: `db/migrate/000_create_enum_types.rb` (enum exists in DB, used as constraint)
+- **Phase 2 Authorization**: Will implement Pundit policies when admin features are needed
+
 ## Background Processing
 
 ### **Sidekiq 7+**

@@ -1,0 +1,20 @@
+aapl:
+  symbol: AAPL
+  company_name: Apple Inc.
+  exchange: NASDAQ
+  security_type: stock
+  last_price: 175.43
+
+msft:
+  symbol: MSFT
+  company_name: Microsoft Corporation
+  exchange: NASDAQ
+  security_type: stock
+  last_price: 378.85
+
+googl:
+  symbol: GOOGL
+  company_name: Alphabet Inc.
+  exchange: NASDAQ
+  security_type: stock
+  last_price: 142.56

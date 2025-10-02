@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :trades, dependent: :destroy
   has_many :user_stock_analyses, dependent: :destroy
   has_many :account_snapshots, through: :trading_accounts
+  has_many :holding_sections, dependent: :destroy
+  has_many :positions, through: :trading_accounts
 
   # Authentication and sessions
   has_many :sessions, dependent: :destroy
@@ -17,8 +19,11 @@ class User < ApplicationRecord
   normalizes :email, with: ->(email) { email.strip.downcase }
   normalizes :first_name, :last_name, with: ->(value) { value.strip.presence }
 
-  # User roles for potential admin features
-  enum :role, { trader: "trader", admin: "admin" }, default: :trader, validate: true
+  # User role (simple string field for future admin features)
+  # Phase 1: All users are 'trader'. Phase 2: Will implement Pundit authorization
+  # Database has PostgreSQL enum type, but we're using it as a simple string in Rails
+  attribute :role, :string, default: 'trader'
+  validates :role, inclusion: { in: %w[trader admin] }, allow_nil: false
 
   # Profile image handling
   has_one_attached :avatar do |attachable|

@@ -2,7 +2,9 @@ class DashboardController < ApplicationController
   def index
     @trading_accounts = current_user.trading_accounts.includes(:account_snapshots)
     @recent_trades = current_user.trades.recent.includes(:security).limit(10)
-    @portfolio_stats = calculate_portfolio_stats
+    @portfolio_stats = calculate_enhanced_portfolio_stats
+    @holdings_by_section = group_holdings_by_section
+    @performance_metrics = calculate_performance_metrics
   end
 
   def analytics
@@ -63,5 +65,53 @@ class DashboardController < ApplicationController
                 .group_by { |trade| trade.security&.sector || "Unknown" }
                 .map { |sector, trades| [ sector, trades.sum(&:position_value) ] }
                 .to_h
+  end
+
+  def calculate_enhanced_portfolio_stats
+    total_value = current_user.total_portfolio_value
+    deployed_percentage = current_user.total_deployed_percentage
+    cash_percentage = 100 - deployed_percentage
+    daily_pnl = calculate_daily_pnl
+    net_pnl = calculate_net_pnl
+    
+    {
+      total_value: total_value,
+      cash_percentage: cash_percentage,
+      daily_pnl: daily_pnl,
+      net_pnl: net_pnl,
+      deployed_percentage: deployed_percentage
+    }
+  end
+
+  def group_holdings_by_section
+    current_user.holding_sections.ordered.includes(:positions => :security)
+  end
+
+  def calculate_daily_pnl
+    current_user.trades
+                .where(entry_date: Date.current.beginning_of_day..Date.current.end_of_day)
+                .sum(:net_pnl)
+  end
+
+  def calculate_net_pnl
+    # Defensive: handle case where user has no positions yet
+    return 0 unless current_user.respond_to?(:positions)
+
+    positions = current_user.positions.where("quantity > 0")
+    return 0 unless positions.any?
+
+    positions.sum { |pos| pos.unrealized_pnl || 0 }
+  rescue NoMethodError => e
+    Rails.logger.error "Position calculation error: #{e.message}"
+    0
+  end
+
+  def calculate_performance_metrics
+    {
+      current_drawdown: 0.0, # Placeholder
+      max_drawdown: 0.0,     # Placeholder
+      best_day: 0.0,         # Placeholder
+      worst_day: 0.0         # Placeholder
+    }
   end
 end

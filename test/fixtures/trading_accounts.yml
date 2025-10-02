@@ -1,0 +1,13 @@
+main:
+  user: trader_one
+  zerodha_user_id: ZR001
+  account_name: Main Account
+  account_type: personal
+  status: active
+
+secondary:
+  user: trader_two
+  zerodha_user_id: ZR002
+  account_name: Secondary Account
+  account_type: aggressive
+  status: active
