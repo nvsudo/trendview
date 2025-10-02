@@ -13,9 +13,9 @@ class CreatePositions < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :positions, [:user_id, :security_id, :trading_account_id], unique: true
-    add_index :positions, [:user_id, :position_type]
-    add_index :positions, [:closed_at]
+
+    add_index :positions, [ :user_id, :security_id, :trading_account_id ], unique: true
+    add_index :positions, [ :user_id, :position_type ]
+    add_index :positions, [ :closed_at ]
   end
 end

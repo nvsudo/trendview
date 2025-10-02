@@ -52,7 +52,7 @@ class HoldingSectionTest < ActiveSupport::TestCase
   test "should create default sections for user" do
     new_user = users(:new_trader)
     sections = HoldingSection.create_default_sections_for_user!(new_user)
-    
+
     assert_equal 2, sections.count
     assert_equal "Core Holdings", sections.first.name
     assert_equal "Probe Holdings", sections.last.name
@@ -84,7 +84,7 @@ class HoldingSectionTest < ActiveSupport::TestCase
       average_price: 150.0,
       holding_section: @section
     )
-    
+
     assert_includes @section.positions, position
   end
 
@@ -98,7 +98,7 @@ class HoldingSectionTest < ActiveSupport::TestCase
       average_price: 150.0,
       holding_section: @section
     )
-    
+
     @section.destroy
     position.reload
     assert_nil position.holding_section

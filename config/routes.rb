@@ -44,7 +44,7 @@ Rails.application.routes.draw do
   resources :securities, only: [ :index, :show ] do
     resources :user_stock_analyses, except: [ :index ]
   end
-  
+
   # Holdings management
   resources :holding_sections
   resources :positions, only: [] do

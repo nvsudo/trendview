@@ -73,7 +73,7 @@ class DashboardController < ApplicationController
     cash_percentage = 100 - deployed_percentage
     daily_pnl = calculate_daily_pnl
     net_pnl = calculate_net_pnl
-    
+
     {
       total_value: total_value,
       cash_percentage: cash_percentage,
@@ -84,7 +84,7 @@ class DashboardController < ApplicationController
   end
 
   def group_holdings_by_section
-    current_user.holding_sections.ordered.includes(:positions => :security)
+    current_user.holding_sections.ordered.includes(positions: :security)
   end
 
   def calculate_daily_pnl

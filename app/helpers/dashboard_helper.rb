@@ -8,7 +8,7 @@ module DashboardHelper
   # Format percentage change with color and sign
   def format_percentage_change(value, total)
     percentage = safe_percentage(value, total)
-    sign = value >= 0 ? '+' : ''
+    sign = value >= 0 ? "+" : ""
     "#{sign}#{percentage}%"
   end
 end

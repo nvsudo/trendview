@@ -22,7 +22,7 @@ class User < ApplicationRecord
   # User role (simple string field for future admin features)
   # Phase 1: All users are 'trader'. Phase 2: Will implement Pundit authorization
   # Database has PostgreSQL enum type, but we're using it as a simple string in Rails
-  attribute :role, :string, default: 'trader'
+  attribute :role, :string, default: "trader"
   validates :role, inclusion: { in: %w[trader admin] }, allow_nil: false
 
   # Profile image handling

@@ -10,8 +10,8 @@ class CreateHoldingSections < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :holding_sections, [:user_id, :position]
-    add_index :holding_sections, [:user_id, :name], unique: true
+
+    add_index :holding_sections, [ :user_id, :position ]
+    add_index :holding_sections, [ :user_id, :name ], unique: true
   end
 end

@@ -1,5 +1,5 @@
 class HoldingSectionsController < ApplicationController
-  before_action :set_holding_section, only: [:show, :edit, :update, :destroy]
+  before_action :set_holding_section, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @sections = current_user.holding_sections.ordered
@@ -15,9 +15,9 @@ class HoldingSectionsController < ApplicationController
   def create
     @section = current_user.holding_sections.build(section_params)
     @section.position = next_position
-    
+
     if @section.save
-      redirect_to dashboard_path, notice: 'Section created successfully'
+      redirect_to dashboard_path, notice: "Section created successfully"
     else
       render :new, status: :unprocessable_entity
     end
@@ -28,7 +28,7 @@ class HoldingSectionsController < ApplicationController
 
   def update
     if @section.update(section_params)
-      redirect_to dashboard_path, notice: 'Section updated successfully'
+      redirect_to dashboard_path, notice: "Section updated successfully"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -36,7 +36,7 @@ class HoldingSectionsController < ApplicationController
 
   def destroy
     @section.destroy
-    redirect_to dashboard_path, notice: 'Section deleted successfully'
+    redirect_to dashboard_path, notice: "Section deleted successfully"
   end
 
   private
