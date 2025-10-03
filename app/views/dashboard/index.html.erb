@@ -1,53 +1,22 @@
-<!-- Market Ticker Header -->
-<div class="bg-container border-b border-border px-6 py-2">
-  <div class="flex justify-between items-center text-sm">
-    <div class="flex gap-8">
-      <div class="flex items-center gap-2">
-        <span class="text-secondary">NIFTY 50</span>
-        <span class="font-medium">19,674.25</span>
-        <span class="text-green-600">+187.45 (0.96%)</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-secondary">SENSEX</span>
-        <span class="font-medium">65,432.10</span>
-        <span class="text-green-600">+245.67 (0.38%)</span>
-      </div>
-    </div>
-    
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <span class="text-secondary">All Accounts</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </div>
-      <div class="flex gap-2">
-        <button class="p-1 rounded hover:bg-gray-100">🔔</button>
-        <button class="p-1 rounded hover:bg-gray-100">⚙️</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="max-w-7xl mx-auto px-6 py-8">
   <!-- Portfolio Cards Section -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Total Portfolio Value -->
+    <!-- Account Size (Open Positions + Cash) -->
     <div class="bg-container rounded-2xl border border-border p-6">
-      <div class="text-sm text-secondary mb-1">Total Value</div>
-      <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:total_value]) %></div>
+      <div class="text-sm text-secondary mb-1">Account Size</div>
+      <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:total_account_size]) %></div>
       <div class="text-sm <%= @portfolio_stats[:daily_pnl] >= 0 ? 'text-green-600' : 'text-red-600' %>">
         <%= @portfolio_stats[:daily_pnl] >= 0 ? '+' : '' %>₹<%= number_with_delimiter(@portfolio_stats[:daily_pnl]) %>
-        (<%= format_percentage_change(@portfolio_stats[:daily_pnl], @portfolio_stats[:total_value]) %>)
+        (<%= format_percentage_change(@portfolio_stats[:daily_pnl], @portfolio_stats[:total_account_size]) %>)
       </div>
     </div>
 
-    <!-- Cash Available -->
+    <!-- Cash (Subset of Account Size) -->
     <div class="bg-container rounded-2xl border border-border p-6">
       <div class="text-sm text-secondary mb-1">Cash</div>
-      <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:total_value] * @portfolio_stats[:cash_percentage] / 100) %></div>
+      <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:total_cash]) %></div>
       <div class="text-sm text-secondary">
-        <%= @portfolio_stats[:cash_percentage].round(2) %>%
+        <%= @portfolio_stats[:cash_percentage].round(2) %>% of account
       </div>
     </div>
 
@@ -56,7 +25,7 @@
       <div class="text-sm text-secondary mb-1">P&L Today</div>
       <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:daily_pnl]) %></div>
       <div class="text-sm <%= @portfolio_stats[:daily_pnl] >= 0 ? 'text-green-600' : 'text-red-600' %>">
-        <%= format_percentage_change(@portfolio_stats[:daily_pnl], @portfolio_stats[:total_value]) %>
+        <%= format_percentage_change(@portfolio_stats[:daily_pnl], @portfolio_stats[:total_account_size]) %>
       </div>
     </div>
 
@@ -65,7 +34,7 @@
       <div class="text-sm text-secondary mb-1">Net P&L</div>
       <div class="text-3xl font-semibold text-primary mb-2">₹<%= number_with_delimiter(@portfolio_stats[:net_pnl]) %></div>
       <div class="text-sm <%= @portfolio_stats[:net_pnl] >= 0 ? 'text-green-600' : 'text-red-600' %>">
-        <%= format_percentage_change(@portfolio_stats[:net_pnl], @portfolio_stats[:total_value]) %>
+        <%= format_percentage_change(@portfolio_stats[:net_pnl], @portfolio_stats[:total_account_size]) %>
       </div>
     </div>
   </div>

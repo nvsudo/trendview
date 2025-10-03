@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_02_162613) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_03_075858) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -254,6 +254,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_162613) do
     t.index ["user_stage"], name: "index_user_stock_analyses_on_user_stage"
   end
 
+  create_table "user_ui_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "preference_category", null: false
+    t.string "preference_key", null: false
+    t.jsonb "preference_value", default: {}, null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["preference_value"], name: "index_user_ui_preferences_on_preference_value", using: :gin
+    t.index ["user_id", "preference_category", "preference_key"], name: "index_ui_prefs_unique", unique: true
+    t.index ["user_id"], name: "index_user_ui_preferences_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -301,4 +314,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_02_162613) do
   add_foreign_key "trading_accounts", "users"
   add_foreign_key "user_stock_analyses", "securities"
   add_foreign_key "user_stock_analyses", "users"
+  add_foreign_key "user_ui_preferences", "users"
 end

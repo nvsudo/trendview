@@ -53,6 +53,15 @@ Rails.application.routes.draw do
     end
   end
 
+  # UI Preferences
+  resources :preferences, only: [] do
+    collection do
+      get ':category/:key', action: :show, as: :get
+      put ':category/:key', action: :update, as: :set
+      patch ':category/:key/nested', action: :update_nested, as: :update_nested
+    end
+  end
+
   # Dashboard and analytics
   get "/analytics", to: "dashboard#analytics"
   get "/portfolio", to: "dashboard#portfolio"

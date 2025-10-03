@@ -67,6 +67,11 @@ class Position < ApplicationRecord
     (unrealized_pnl / invested_amount * 100).round(2)
   end
 
+  def portfolio_weight_percent(total_portfolio_value)
+    return 0 if total_portfolio_value.zero?
+    (current_value / total_portfolio_value * 100).round(1)
+  end
+
   def profitable?
     unrealized_pnl > 0
   end

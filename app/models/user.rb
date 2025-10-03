@@ -9,6 +9,9 @@ class User < ApplicationRecord
   has_many :holding_sections, dependent: :destroy
   has_many :positions, through: :trading_accounts
 
+  # UI preferences
+  has_many :ui_preferences, class_name: 'UserUiPreference', dependent: :destroy
+
   # Authentication and sessions
   has_many :sessions, dependent: :destroy
 
@@ -56,18 +59,42 @@ class User < ApplicationRecord
     trading_accounts.where(is_primary: true).first || trading_accounts.first
   end
 
-  def total_portfolio_value
-    trading_accounts.sum(&:current_portfolio_value)
+  # Account Size = Open Positions + Cash
+  def total_account_size
+    trading_accounts.sum(&:account_size)
+  end
+
+  # Total cash across all accounts
+  def total_cash_balance
+    trading_accounts.sum(&:cash_balance)
   end
 
   def total_deployed_percentage
-    return 0 if total_portfolio_value.zero?
+    return 0 if total_account_size.zero?
 
     total_accounts = trading_accounts.count
     return 0 if total_accounts.zero?
 
     average_deployment = trading_accounts.sum(&:deployed_percentage) / total_accounts
     average_deployment.round(2)
+  end
+
+  # UI Preferences methods
+  def get_preference(category, key, default = {})
+    UserUiPreference.get(self, category, key, default)
+  end
+
+  def set_preference(category, key, value)
+    UserUiPreference.set(self, category, key, value)
+  end
+
+  # Specific preference getters with defaults
+  def position_columns_preference
+    get_preference('positions_table', 'columns', DEFAULT_POSITION_COLUMNS)
+  end
+
+  def dashboard_layout_preference
+    get_preference('dashboard', 'layout', DEFAULT_DASHBOARD_LAYOUT)
   end
 
   # AI features

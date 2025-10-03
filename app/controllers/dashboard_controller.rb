@@ -25,7 +25,7 @@ class DashboardController < ApplicationController
 
   def calculate_portfolio_stats
     {
-      total_value: current_user.total_portfolio_value,
+      total_account_size: current_user.total_account_size,
       deployed_percentage: current_user.total_deployed_percentage,
       total_trades: current_user.trades.count,
       winning_trades: current_user.trades.profitable.count,
@@ -68,15 +68,16 @@ class DashboardController < ApplicationController
   end
 
   def calculate_enhanced_portfolio_stats
-    total_value = current_user.total_portfolio_value
+    total_account_size = current_user.total_account_size
+    total_cash = current_user.total_cash_balance
     deployed_percentage = current_user.total_deployed_percentage
-    cash_percentage = 100 - deployed_percentage
     daily_pnl = calculate_daily_pnl
     net_pnl = calculate_net_pnl
 
     {
-      total_value: total_value,
-      cash_percentage: cash_percentage,
+      total_account_size: total_account_size,
+      total_cash: total_cash,
+      cash_percentage: total_account_size.zero? ? 0 : (total_cash / total_account_size * 100).round(2),
       daily_pnl: daily_pnl,
       net_pnl: net_pnl,
       deployed_percentage: deployed_percentage

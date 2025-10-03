@@ -40,15 +40,25 @@ class TradingAccount < ApplicationRecord
   after_update :ensure_single_primary, if: :saved_change_to_is_primary?
 
   # Portfolio methods
-  def current_portfolio_value
-    account_snapshots.recent.first&.total_value || 0
+  # Account Size = Open Positions + Cash
+  def account_size
+    open_positions_value + cash_balance
+  end
+
+  # Sum of all active positions' current value
+  def open_positions_value
+    positions.active.sum(&:current_value)
+  end
+
+  # Cash balance from latest snapshot
+  def cash_balance
+    account_snapshots.recent.first&.cash_balance || 0
   end
 
   def deployed_percentage
-    snapshot = account_snapshots.recent.first
-    return 0 unless snapshot&.total_value&.positive?
+    return 0 if account_size.zero?
 
-    ((snapshot.invested_amount || 0) / snapshot.total_value * 100).round(2)
+    ((open_positions_value || 0) / account_size * 100).round(2)
   end
 
   def daily_pnl
