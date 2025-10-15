@@ -48,7 +48,7 @@ gem "image_processing", ">= 1.2"
 # Monitoring & Security
 gem "sentry-ruby"
 gem "sentry-rails"
-gem "rack-attack", "~> 6.6"
+gem "rack-attack", "~> 6.8"
 
 # State machines (for trading workflow)
 gem "aasm"
